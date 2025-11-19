@@ -175,6 +175,15 @@ def read_INT():
         ch = peek_char1()
     return rep
 
+def read_NUM():
+    ch = peek_char1()
+    mantisse = ''
+    while defs.EOI not in ch:
+        if ch in defs.DIGITS:
+            mantisse += ch
+        consume_char()
+        ch = peek_char1()
+    return mantisse
 
 global int_value
 global exp_value
