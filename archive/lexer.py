@@ -32,7 +32,7 @@ def init_char():
     defs.SEP = {' ', '\n', '\t'} - set(defs.EOI)
     defs.V = set(tuple(defs.V_C) + (defs.EOI,) + tuple(defs.SEP))
     current_char1 = defs.INPUT_STREAM.read(1)
-    print("@", repr(current_char1))  # decomment this line may help debugging
+    #print("@", repr(current_char1))  # decomment this line may help debugging
     if current_char1 not in defs.V:
         raise LexerError('Character ' + repr(current_char1) + ' unsupported')
     if current_char1 == defs.EOI:
@@ -40,14 +40,14 @@ def init_char():
         current_char3 = defs.EOI
     else:
         current_char2 = defs.INPUT_STREAM.read(1)
-        print("@", repr(current_char2))  # decomment this line may help debugging
+     #   print("@", repr(current_char2))  # decomment this line may help debugging
         if current_char2 not in defs.V:
             raise LexerError('Character ' + repr(current_char2) + ' unsupported')
         if current_char2 == defs.EOI:
             current_char3 = defs.EOI
         else:
             current_char3 = defs.INPUT_STREAM.read(1)
-            print("@", repr(current_char3))  # decomment this line may help debugging
+     #       print("@", repr(current_char3))  # decomment this line may help debugging
             if current_char3 not in defs.V:
                 raise LexerError('Character ' + repr(current_char3) + ' unsupported')
 
@@ -73,7 +73,7 @@ def consume_char():
         current_char2 = defs.EOI
         return
     next_char = defs.INPUT_STREAM.read(1)
-    print("@", repr(next_char))  # decommenting this line may help debugging
+    #print("@", repr(next_char))  # decommenting this line may help debugging
     if next_char in defs.V:
         current_char1 = current_char2
         current_char2 = current_char3
@@ -175,24 +175,20 @@ def read_INT():
         ch = peek_char1()
     return rep
 
-def read_NUM():
-    ch = peek_char1()
-    mantisse = ''
-    while defs.EOI not in ch:
-        if ch in defs.DIGITS:
-            mantisse += ch
-        consume_char()
-        ch = peek_char1()
-    return mantisse
-
 global int_value
 global exp_value
 global sign_value
 
 # Lecture d'un nombre en renvoyant sa valeur
 def read_NUM():
-    print("@ATTENTION: lexer.read_NUM à finir !") # LIGNE A SUPPRIMER
-    return 0;
+    int_value = ''
+    ch = peek_char1()
+    while defs.EOI not in ch:
+        if ch in defs.DIGITS:
+            int_value = int_value+ ch
+        consume_char()
+        ch = peek_char1()
+    return int_value
 
 
 # Parse un lexème (sans séparateurs) de l'entrée et renvoie son token.
