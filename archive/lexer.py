@@ -163,19 +163,16 @@ def read_digit():
 # Lecture d'un entier en renvoyant sa valeur
 def read_INT():
     ch = peek_char1()
-    # ch = peek char3()
+    if ch == defs.EOI or ch not in defs.DIGITS:
+        return None
     rep = ''
     while defs.EOI not in ch:
-        for i in ch :
-            if i not in defs.DIGITS:
-                break
-            else :
-                rep = rep+i
-        #consume_char()
-        #consume_char()
+        if ch not in defs.DIGITS:
+            break
+        else:
+            rep = rep+ch
         consume_char()
         ch = peek_char1()
-        #ch = peek_char1()
     return rep
 
 
