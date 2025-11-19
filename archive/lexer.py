@@ -173,6 +173,7 @@ def read_INT():
             rep = rep+ch
         consume_char()
         ch = peek_char1()
+    print(rep)
     return rep
 
 global int_value
@@ -188,20 +189,33 @@ def read_NUM():
     int_value = ''
     exp_value = ''
     sign_value = ''
+    Présence_de_point = False
     ch = peek_char1()
     while defs.EOI not in ch:
-        if ch in defs.DIGITS:
+        if ch == '.':
+            Présence_de_point = True
+            S = 0
+        elif ch in defs.DIGITS:
             int_value = int_value+ ch
+            if Présence_de_point:
+                S+=1
         elif ch =='e':
             exp_value = exp_value+ ch
         elif ch == '+' or ch =='-':
             sign_value += ch
         consume_char()
         ch = peek_char1()
-    print(int_value)
+    if Présence_de_point:
+        if exp_value == '':
+            exp_value = str(S)
+        if sign_value == '':
+            sign_value ='-'
+    print(int_value+'.0')
     print(exp_value)
     print(sign_value)
-    return int_value
+    if exp_value != '' and sign_value != '':
+        return int_value+"e"+sign_value+exp_value
+    return int_value+'.0'
 
 
 # Parse un lexème (sans séparateurs) de l'entrée et renvoie son token.
