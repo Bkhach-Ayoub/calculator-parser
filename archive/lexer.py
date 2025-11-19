@@ -167,8 +167,10 @@ def read_INT():
     rep = ''
     while defs.EOI not in ch:
         for i in ch :
-            if i in defs.DIGITS:
-                rep= rep+i
+            if i not in defs.DIGITS:
+                break
+            else :
+                rep = rep+i
         #consume_char()
         #consume_char()
         consume_char()
