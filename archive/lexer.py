@@ -180,14 +180,27 @@ global exp_value
 global sign_value
 
 # Lecture d'un nombre en renvoyant sa valeur
+
+def transformation():
+    return None
+
 def read_NUM():
     int_value = ''
+    exp_value = ''
+    sign_value = ''
     ch = peek_char1()
     while defs.EOI not in ch:
         if ch in defs.DIGITS:
             int_value = int_value+ ch
+        elif ch =='e':
+            exp_value = exp_value+ ch
+        elif ch == '+' or ch =='-':
+            sign_value += ch
         consume_char()
         ch = peek_char1()
+    print(int_value)
+    print(exp_value)
+    print(sign_value)
     return int_value
 
 
