@@ -5,7 +5,7 @@ Projet TL : lexer de la calculatrice
 """
 
 import sys
-sys.path.append("/home/elfarchi/TL/projet-TL/archive/")
+sys.path.append("/home/elfarchi/TL/projet-TL/archive/") # matnssach tmodifier lpath
 import enum
 import definitions as defs
 
@@ -190,17 +190,21 @@ def read_NUM():
     exp_value = ''
     sign_value = ''
     Présence_de_point = False
+    Présence_de_exp = False
     ch = peek_char1()
     while defs.EOI not in ch:
         if ch == '.':
             Présence_de_point = True
             S = 0
         elif ch in defs.DIGITS:
-            int_value = int_value+ ch
+            if Présence_de_exp:
+                exp_value = exp_value+ch
+            else: 
+                int_value = int_value+ ch
             if Présence_de_point:
                 S+=1
-        elif ch =='e':
-            exp_value = exp_value+ ch
+        elif ch =='e'or ch == 'E':
+            Présence_de_exp = True
         elif ch == '+' or ch =='-':
             sign_value += ch
         consume_char()
@@ -210,12 +214,14 @@ def read_NUM():
             exp_value = str(S)
         if sign_value == '':
             sign_value ='-'
-    print(int_value+'.0')
+    if exp_value =='':
+        exp_value ='0'
+    print(float(int_value+"e"+sign_value+exp_value))
     print(exp_value)
     print(sign_value)
-    if exp_value != '' and sign_value != '':
-        return int_value+"e"+sign_value+exp_value
-    return int_value+'.0'
+    #if exp_value != '' and sign_value == '':
+    #    return int_value+"e"+sign_value+exp_value
+    return int_value+"e"+sign_value+exp_value
 
 
 # Parse un lexème (sans séparateurs) de l'entrée et renvoie son token.
