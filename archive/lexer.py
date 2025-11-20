@@ -192,10 +192,10 @@ def read_NUM():
     Présence_de_point = False
     Présence_de_exp = False
     ch = peek_char1()
+    S = 0
     while defs.EOI not in ch:
         if ch == '.':
             Présence_de_point = True
-            S = 0
         elif ch in defs.DIGITS:
             if Présence_de_exp:
                 exp_value = exp_value+ch
@@ -205,6 +205,7 @@ def read_NUM():
                 S+=1
         elif ch =='e'or ch == 'E':
             Présence_de_exp = True
+            Présence_de_point = False
         elif ch == '+' or ch =='-':
             sign_value += ch
         consume_char()
@@ -216,11 +217,16 @@ def read_NUM():
             sign_value ='-'
     if exp_value =='':
         exp_value ='0'
-    print(float(int_value+"e"+sign_value+exp_value))
-    print(exp_value)
-    print(sign_value)
-    #if exp_value != '' and sign_value == '':
-    #    return int_value+"e"+sign_value+exp_value
+    if S != 0 and Présence_de_exp:
+        if exp_value == '0':
+            sign_value = '-'
+            exp_value = str(int(exp_value)+S)
+        else :
+            if sign_value == '-':
+                exp_value = str(int(exp_value)+S)
+            else :
+                exp_value = str(int(exp_value)-S)
+        return int_value+"e"+sign_value+exp_value
     return int_value+"e"+sign_value+exp_value
 
 
