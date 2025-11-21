@@ -186,9 +186,7 @@ def transformation():
     return None
 
 def read_NUM():
-    int_value = ''
-    exp_value = ''
-    sign_value = ''
+    int_value,exp_value,sign_value = '','',''
     Présence_de_point = False
     Présence_de_exp = False
     ch = peek_char1()
@@ -203,10 +201,10 @@ def read_NUM():
                 int_value = int_value+ ch
             if Présence_de_point:
                 S+=1
-        elif ch =='e'or ch == 'E':
+        elif ch in ['e','E']:
             Présence_de_exp = True
             Présence_de_point = False
-        elif ch == '+' or ch =='-':
+        elif ch in ['+','-']:
             sign_value += ch
         consume_char()
         ch = peek_char1()
