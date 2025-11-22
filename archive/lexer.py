@@ -163,19 +163,17 @@ def read_digit():
 # Lecture d'un entier en renvoyant sa valeur
 def read_INT():
     ch = peek_char1()
-    if ch == defs.EOI or ch not in defs.DIGITS:
-        return None
     rep = ''
-    while defs.EOI not in ch:
-        if ch not in defs.DIGITS:
-            break
-        else:
+    state = 0
+    if step_FLOAT_TO_EOI(state,ch) == 1 or ch not in defs.DIGITS:
+        return None
+    else:
+        state = 2
+        while step_FLOAT_TO_EOI(state,ch)!=3 and ch in defs.DIGITS:
             rep = rep+ch
-        consume_char()
-        ch = peek_char1()
-    print(rep)
+            consume_char()
+            ch = peek_char1()
     return rep
-
 global int_value
 global exp_value
 global sign_value
@@ -185,6 +183,48 @@ global sign_value
 def transformation():
     return None
 
+"""def read_NUM():
+    int_value,exp_value,sign_value = '','',''
+    Présence_de_point = False
+    Présence_de_exp = False
+    ch = peek_char1()
+    S = 0
+    while defs.EOI not in ch:
+        if ch == '.':
+            Présence_de_point = True
+        elif ch in defs.DIGITS:
+            if Présence_de_exp:
+                exp_value = exp_value+ch
+            else: 
+                int_value = int_value+ ch
+            if Présence_de_point:
+                S+=1
+        elif ch in ['e','E']:
+            Présence_de_exp = True
+            Présence_de_point = False
+        elif ch in ['+','-']:
+            sign_value += ch
+        consume_char()
+        ch = peek_char1()
+    if Présence_de_point:
+        if exp_value == '':
+            exp_value = str(S)
+        if sign_value == '':
+            sign_value ='-'
+    if exp_value =='':
+        exp_value ='0'
+    if S != 0 and Présence_de_exp:
+        if exp_value == '0':
+            sign_value = '-'
+            exp_value = str(int(exp_value)+S)
+        else :
+            if sign_value == '-':
+                exp_value = str(int(exp_value)+S)
+            else :
+                exp_value = str(int(exp_value)-S)
+        return int_value+"e"+sign_value+exp_value
+    return int_value+"e"+sign_value+exp_value
+"""
 def read_NUM():
     int_value,exp_value,sign_value = '','',''
     Présence_de_point = False
@@ -226,7 +266,6 @@ def read_NUM():
                 exp_value = str(int(exp_value)-S)
         return int_value+"e"+sign_value+exp_value
     return int_value+"e"+sign_value+exp_value
-
 
 # Parse un lexème (sans séparateurs) de l'entrée et renvoie son token.
 # Cela consomme tous les caractères du lexème lu.
