@@ -174,14 +174,37 @@ def read_INT():
             consume_char()
             ch = peek_char1()
     return rep
+
 global int_value
 global exp_value
 global sign_value
 
 # Lecture d'un nombre en renvoyant sa valeur
 
-def transformation():
-    return None
+"""def step_number_to_EOI():
+    ch = peek_char1
+    if state == 0:
+        if ch not in defs.DIGITS:
+            return 1
+        elif ch == '.': 
+            return 3
+        else:
+            return None
+    elif state == 1:
+        if ch in defs.DIGITS:
+            return 2
+        else :
+            return None
+    elif state in [2,3]:
+        if ch in defs.DIGITS:
+            return 2 if state == 2 else 3
+        elif ch in ["E,e"]:
+            return 4
+        else :
+            return None
+    elif state 
+ """
+        
 
 """def read_NUM():
     int_value,exp_value,sign_value = '','',''
@@ -229,25 +252,45 @@ def read_NUM():
     int_value,exp_value,sign_value = '','',''
     Présence_de_point = False
     Présence_de_exp = False
-    ch = peek_char1()
+    Présence_de_signe = False
+    exp = ['e','E']
+    sign = ['+','-']
+    ch = peek_char3()
     S = 0
-    while defs.EOI not in ch:
-        if ch == '.':
-            Présence_de_point = True
-        elif ch in defs.DIGITS:
-            if Présence_de_exp:
-                exp_value = exp_value+ch
-            else: 
-                int_value = int_value+ ch
-            if Présence_de_point:
-                S+=1
-        elif ch in ['e','E']:
-            Présence_de_exp = True
-            Présence_de_point = False
-        elif ch in ['+','-']:
-            sign_value += ch
+    if ch[0] in exp+sign:
+        return None
+    if ch[0] == '.' and ch[1] not in defs.DIGITS:
+        return None
+    while ch != defs.EOI+defs.EOI+defs.EOI:
+        for i in ch:
+            if i != defs.EOI:
+                if i == '.':
+                    Présence_de_point = True
+                elif i in defs.DIGITS:
+                    if Présence_de_exp:
+                        exp_value = exp_value+i
+                    else: 
+                        int_value = int_value+ i
+                    if Présence_de_point:
+                        S+=1
+                elif i in exp:
+                    if Présence_de_exp:
+                        return int_value
+                    else:
+                        Présence_de_exp = True
+                        Présence_de_point = False
+                elif i in sign:
+                    if Présence_de_signe:
+                        return int_value
+                    else:
+                        Présence_de_signe = True
+                        sign_value += i
+        print(ch)
         consume_char()
-        ch = peek_char1()
+        consume_char()
+        consume_char()
+        ch = peek_char3()
+    print(sign_value)
     if Présence_de_point:
         if exp_value == '':
             exp_value = str(S)
