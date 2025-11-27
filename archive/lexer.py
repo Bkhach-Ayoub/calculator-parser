@@ -323,9 +323,14 @@ def read_NUM():
             if Présence_de_signe:
                 return int_value
             else:
-                Présence_de_signe = True
-                sign_value += c
+                if Présence_de_exp:
+                    Présence_de_signe = True
+                    sign_value += c
+                else:
+                    break
             consume_char()
+        else :
+            break
         c = peek_char1()
     if not Présence_de_point and not Présence_de_signe and not Présence_de_exp:
         return int_value
@@ -353,65 +358,24 @@ def read_NUM():
 def read_token_after_separators():
         NUM = read_NUM()
         print(" i",NUM)
-        if NUM is None :
-            num = read_NUM()
-            print("n",num)
-            print(defs.V_T.NUM,float(num))
-            return (defs.V_T.NUM,float(num))
-        else:
-            print(defs.V_T.NUM,float(NUM))
-            return (defs.V_T.NUM,float(NUM))
-'''     
-    print(INT)
-
-    if num is None :
-        nameo = defs.TOKEN_MAP[num].name
-        return (defs.V_T.nameo,None)
-    flo = float(num)
-    int = int(INT)
-    try:
-        res = defs.str_attr_token(defs.TOKEN_MAP[''],flo)
-        return (defs.V_T.NUM,flo)
-    except AssertionError:
-        res = defs.str_attr_token(defs.TOKEN_MAP['#'],int)
-        return (defs.V_T.CALC,int)
-    '''
+        print(defs.V_T.NUM,float(NUM))
+        return (defs.V_T.NUM,float(NUM))
 
 # Donne le prochain token de l'entrée, en sautant les séparateurs éventuels en tête
 # et en consommant les caractères du lexème reconnu.
 def next_token():
-    '''ch = peek_char1()
-    L = []
-    rep = []
-    r = ''
-    while ch != defs.EOI:
-        if ch not in defs.SEP:
-            r=r + ch
-        else:
-            L.append(r)
-            r = ''
-            c = read_token_after_separators()
-        consume_char()
+    while True:
         ch = peek_char1()
-    L.append(r)
-    for i in L:
-        try:
-            res = defs.str_attr_token(defs.TOKEN_MAP[''],float(i))
-            rep.append((defs.V_T.NUM,float(i)))
-        except AssertionError:
-            res = defs.str_attr_token(defs.TOKEN_MAP['#'],int(float(i)))
-            rep.append((defs.V_T.CALC,int(float(i))))
-        
-    return '''
-    ch = peek_char1()
-    while ch != defs.EOI:
-        if ch not in defs.SEP :
-            return read_token_after_separators()
-        else :
+        if ch == defs.EOI:
+            return (defs.V_T.END, None)
+        elif ch in defs.SEP:
             consume_char()
-            ch = peek_char1()
-    return (defs.V_T.END, None)
-
+        ch3 = peek_char3()
+        if ch in defs.DIGITS or (ch == '.' and ch3[1] in defs.DIGITS):
+            return read_token_after_separators()
+        elif ch in defs.TOKEN_MAP:
+            consume_char()
+            return (defs.TOKEN_MAP[ch], None)
 #################################
 ## Fonctions de tests
 
