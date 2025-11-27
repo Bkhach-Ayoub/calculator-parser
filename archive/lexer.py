@@ -252,10 +252,12 @@ def read_NUM():
 # Parse un lexème (sans séparateurs) de l'entrée et renvoie son token.
 # Cela consomme tous les caractères du lexème lu.
 def read_token_after_separators():
-        NUM = read_NUM()
-        print(" i",NUM)
-        print(defs.V_T.NUM,float(NUM))
-        return (defs.V_T.NUM,float(NUM))
+    NUM = read_NUM()
+    print(" i", NUM)
+    val = float(NUM)
+    if val.is_integer():
+        val = int(val)
+    return (defs.V_T.NUM, val)
 
 # Donne le prochain token de l'entrée, en sautant les séparateurs éventuels en tête
 # et en consommant les caractères du lexème reconnu.
