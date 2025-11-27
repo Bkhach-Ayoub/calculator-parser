@@ -6,7 +6,6 @@ Projet TL : lexer de la calculatrice
 
 import sys
 sys.path.append("/home/elfarchi/TL/projet-TL/archive/") # matnssach tmodifier lpath
-# safi dkhjelt l ghhjgg
 import enum
 import definitions as defs
 
@@ -181,109 +180,6 @@ global exp_value
 global sign_value
 
 # Lecture d'un nombre en renvoyant sa valeur
-
-'''def step_number_to_EOI(state,ch):
-    exp = ['E','e']
-    sign = ['+','-']
-    if state == 0:
-        if ch =='.':
-            return 1
-        elif ch in defs.DIGITS: 
-            return 3
-        else:
-            return None
-    elif state == 1:
-        if ch in defs.DIGITS:
-            return 2
-        else :
-            return None
-    elif state == 2:
-        if ch in defs.DIGITS:
-            return 2 
-        elif ch in exp:
-            return 4
-        else :
-            return None
-    elif state == 3:
-        if ch in defs.DIGITS:
-            return 3
-        elif ch == '.':
-            return 2
-        elif ch in exp :
-            return 4
-        else:
-            return None
-    elif state ==4:
-        if ch in sign:
-            return 5
-        elif ch in defs.DIGITS:
-            return 6
-        else:
-            return None
-    elif state == 5:
-        if ch in defs.DIGITS:
-            return 6
-        else:
-            return None
-    else:
-        if ch in defs.DIGITS:
-            return 6
-        else:
-            return None
-'''
-        
-"""
-def read_NUM():
-    int_value,exp_value,sign_value = '','0',''
-    Présence_de_point = False
-    Présence_de_exp = False
-    Présence_de_signe = False
-    exp = ['e','E']
-    sign = ['+','-']
-    ch = peek_char3()
-    S = 0
-    state =0
-    rep = ''
-    if ch[0] in exp+sign:
-        return None
-    if ch[0] == '.' and ch[1] not in defs.DIGITS:
-        return None
-    while ch != defs.EOI+defs.EOI+defs.EOI:
-        for i in ch:
-            if i != defs.EOI:
-                state = step_number_to_EOI(state,i)
-                if state <=3:
-                    if i in defs.DIGITS:
-                        int_value+= i
-                    else:
-                        Présence_de_point = True
-                    if Présence_de_point:
-                        S+=1
-                else :
-                    Présence_de_exp = True
-                    if i in sign:
-                        Présence_de_signe = True
-                        sign_value+=i
-                    else:
-                        exp_value+=i
-                print(state)
-                rep = rep+i   
-        consume_char()
-        consume_char()
-        consume_char()
-        ch = peek_char3()
-    if S != 0 and Présence_de_exp:
-        if exp_value == '0':
-            sign_value = '-'
-            exp_value = str(int(exp_value)+S)
-        else :
-            if sign_value == '-':
-                exp_value = str(int(exp_value)+S)
-            else :
-                exp_value = str(int(exp_value)-S)
-        return int_value+"e"+sign_value+exp_value
-    return int_value+"e"+sign_value+exp_value
-"""
 
 def read_NUM():
     int_value,exp_value,sign_value = '','',''
