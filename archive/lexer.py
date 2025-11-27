@@ -290,7 +290,6 @@ def read_NUM():
     Présence_de_point = False
     Présence_de_exp = False
     Présence_de_signe = False
-    #Présence_espace = False
     exp = ['e','E']
     sign = ['+','-']
     ch = peek_char3()
@@ -299,34 +298,37 @@ def read_NUM():
         return None
     if ch[0] in exp+sign or (ch[0] =='.'and ch[1] not in defs.DIGITS) :
         return None
-    while ch != defs.EOI+defs.EOI+defs.EOI:
-        for i in ch:
-            if i != defs.EOI:
-                if i == '.':
-                    Présence_de_point = True
-                elif i in defs.DIGITS:
-                    if Présence_de_exp:
-                        exp_value = exp_value+i
-                    else: 
-                        int_value = int_value+ i
-                    if Présence_de_point:
-                        S+=1
-                elif i in exp:
-                    if Présence_de_exp:
-                        return int_value
-                    else:
-                        Présence_de_exp = True
-                        Présence_de_point = False
-                elif i in sign:
-                    if Présence_de_signe:
-                        return int_value
-                    else:
-                        Présence_de_signe = True
-                        sign_value += i
-        consume_char()
-        consume_char()
-        consume_char()
-        ch = peek_char3()
+    c = peek_char1()
+    while c != defs.EOI and c not in defs.SEP:
+        print(c)
+        if c == '.':
+            Présence_de_point = True
+            consume_char()
+        elif c in defs.DIGITS:
+            if Présence_de_exp:
+                exp_value = exp_value+c
+            else: 
+                int_value = int_value+ c
+            if Présence_de_point:
+                S+=1
+            consume_char()
+        elif c in exp:
+            if Présence_de_exp:
+                return int_value
+            else:
+                Présence_de_exp = True
+                Présence_de_point = False
+            consume_char()
+        elif c in sign:
+            if Présence_de_signe:
+                return int_value
+            else:
+                Présence_de_signe = True
+                sign_value += c
+            consume_char()
+        c = peek_char1()
+    if not Présence_de_point and not Présence_de_signe and not Présence_de_exp:
+        return int_value
     if Présence_de_point:
         if exp_value == '':
             exp_value = str(S)
@@ -349,16 +351,17 @@ def read_NUM():
 # Parse un lexème (sans séparateurs) de l'entrée et renvoie son token.
 # Cela consomme tous les caractères du lexème lu.
 def read_token_after_separators():
-    if peek_char1() != defs.SEP:
-        INT = read_INT()
-        print(" i",INT)
-        if INT is None :
+        NUM = read_NUM()
+        print(" i",NUM)
+        if NUM is None :
             num = read_NUM()
             print("n",num)
+            print(defs.V_T.NUM,float(num))
             return (defs.V_T.NUM,float(num))
-        else :
-            return (defs.V_T.NUM,int(INT))
-    '''
+        else:
+            print(defs.V_T.NUM,float(NUM))
+            return (defs.V_T.NUM,float(NUM))
+'''     
     print(INT)
 
     if num is None :
@@ -402,11 +405,12 @@ def next_token():
     return '''
     ch = peek_char1()
     while ch != defs.EOI:
-        if peek_char1() != defs.SEP :
+        if ch not in defs.SEP :
             return read_token_after_separators()
         else :
             consume_char()
             ch = peek_char1()
+    return (defs.V_T.END, None)
 
 #################################
 ## Fonctions de tests
