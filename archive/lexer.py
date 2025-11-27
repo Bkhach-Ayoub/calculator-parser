@@ -6,6 +6,7 @@ Projet TL : lexer de la calculatrice
 
 import sys
 sys.path.append("/home/elfarchi/TL/projet-TL/archive/") # matnssach tmodifier lpath
+# safi dkhjelt l git
 import enum
 import definitions as defs
 
