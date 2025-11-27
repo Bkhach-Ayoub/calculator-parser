@@ -181,7 +181,7 @@ global sign_value
 
 # Lecture d'un nombre en renvoyant sa valeur
 
-def step_number_to_EOI(state,ch):
+'''def step_number_to_EOI(state,ch):
     exp = ['E','e']
     sign = ['+','-']
     if state == 0:
@@ -229,7 +229,7 @@ def step_number_to_EOI(state,ch):
             return 6
         else:
             return None
-
+'''
         
 """
 def read_NUM():
@@ -289,6 +289,7 @@ def read_NUM():
     Présence_de_point = False
     Présence_de_exp = False
     Présence_de_signe = False
+    #Présence_espace = False
     exp = ['e','E']
     sign = ['+','-']
     ch = peek_char3()
@@ -347,33 +348,64 @@ def read_NUM():
 # Parse un lexème (sans séparateurs) de l'entrée et renvoie son token.
 # Cela consomme tous les caractères du lexème lu.
 def read_token_after_separators():
-    ch = peek_char3()
-    c = ()
-    while ch != defs.EOI+defs.EOI+defs.EOI:
-        r = ''
-        for i in ch :
-            r +=i
-        consume_char()
-        consume_char()
-        consume_char()
-        ch = peek_char3()
-    defs.TOKEN_MAP[r]
-    if defs.str_attr_token(defs.V_T.NUM,float(r)):
-        return (defs.V_T.NUM,float(r))
-    elif defs.str_attr_token(defs.V_T.CALC,int(r)):
-        return (defs.V_T.CALC, int(r))
-    else:
-        return 
-    
+    if peek_char1() != defs.SEP:
+        INT = read_INT()
+        print(" i",INT)
+        if INT is None :
+            num = read_NUM()
+            print("n",num)
+            return (defs.V_T.NUM,float(num))
+        else :
+            return (defs.V_T.NUM,int(INT))
+    '''
+    print(INT)
 
-
+    if num is None :
+        nameo = defs.TOKEN_MAP[num].name
+        return (defs.V_T.nameo,None)
+    flo = float(num)
+    int = int(INT)
+    try:
+        res = defs.str_attr_token(defs.TOKEN_MAP[''],flo)
+        return (defs.V_T.NUM,flo)
+    except AssertionError:
+        res = defs.str_attr_token(defs.TOKEN_MAP['#'],int)
+        return (defs.V_T.CALC,int)
+    '''
 
 # Donne le prochain token de l'entrée, en sautant les séparateurs éventuels en tête
 # et en consommant les caractères du lexème reconnu.
 def next_token():
-    print("@ATTENTION: lexer.next_token à finir !") # LIGNE A SUPPRIMER
-    return read_token_after_separators()
-
+    '''ch = peek_char1()
+    L = []
+    rep = []
+    r = ''
+    while ch != defs.EOI:
+        if ch not in defs.SEP:
+            r=r + ch
+        else:
+            L.append(r)
+            r = ''
+            c = read_token_after_separators()
+        consume_char()
+        ch = peek_char1()
+    L.append(r)
+    for i in L:
+        try:
+            res = defs.str_attr_token(defs.TOKEN_MAP[''],float(i))
+            rep.append((defs.V_T.NUM,float(i)))
+        except AssertionError:
+            res = defs.str_attr_token(defs.TOKEN_MAP['#'],int(float(i)))
+            rep.append((defs.V_T.CALC,int(float(i))))
+        
+    return '''
+    ch = peek_char1()
+    while ch != defs.EOI:
+        if peek_char1() != defs.SEP :
+            return read_token_after_separators()
+        else :
+            consume_char()
+            ch = peek_char1()
 
 #################################
 ## Fonctions de tests
