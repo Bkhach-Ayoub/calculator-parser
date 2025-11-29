@@ -24,7 +24,7 @@ class ParserError(Exception):
     pass
 
 def unexpected_token(expected):
-    return ParserError("Found token '" + str_attr_token(_current_token, _value) + "' but expected " + expected)
+    return ParserError("Found token '" + str_attr_token(_current_token,_value) + "' but expected " + expected)
 
 def get_current():
     return _current_token
@@ -48,11 +48,135 @@ def consume_token(tok):
 
 #########################
 ## Parsing de input et exp
+def parse_exp():
+    if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
+        parse_exp_5()
+        return 
+    else:
+        raise unexpected_token(_current_token.name)
+def parse_exp_0():
+    if _current_token == V_T.NUM:
+        consume_token(_current_token)
+        return
+    if _current_token == V_T.CALC:
+        consume_token(_current_token)
+        return
+    if _current_token == V_T.OPAR:
+        consume_token(_current_token)
+        parse_exp_5()
+        consume_token(V_T.CPAR)
+        return 
+    else:
+        raise unexpected_token(_current_token.name)
+def parse_exp_1():
+    if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR]:
+        parse_exp_0()
+        parse_exp_1_prime()
+        return
+    else:
+        raise unexpected_token(_current_token.name)    
 
+def parse_exp_1_prime():
+    if _current_token == V_T.POW:
+        consume_token(_current_token)
+        parse_exp_1()
+        return
+    if _current_token in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.FACT]:
+        return
+    else:
+        raise unexpected_token(_current_token.name)
+    
+def parse_exp_2():
+    if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR]:
+        parse_exp_1()
+        parse_exp_2_prime()
+        return 
+    else:
+        raise unexpected_token(_current_token.name)
+
+
+def parse_exp_2_prime():
+    if _current_token == V_T.FACT:
+        consume_token(_current_token)
+        parse_exp_2_prime()
+    if _current_token in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL]:
+        return
+    else:
+        raise unexpected_token(_current_token.name)
+    _
+def parse_exp_3():
+    if _current_token== V_T.SUB:
+        consume_token(_current_token)
+        parse_exp_3()
+        return
+    if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR]:       
+        parse_exp_2()
+        return
+    else:
+        raise unexpected_token(_current_token.name)
+def parse_exp_4():
+    if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
+        parse_exp_3()
+        parse_exp_4_prime()
+        return
+    else:
+        raise unexpected_token(_current_token.name)
+
+def parse_exp_4_prime():
+    if _current_token == V_T.MUL:
+        consume_token(_current_token)
+        parse_exp_3()
+        parse_exp_4_prime()
+        return
+    if _current_token == V_T.DIV:
+        consume_token(_current_token)
+        parse_exp_3()
+        parse_exp_4_prime()
+        return
+    if _current_token in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR]:
+        return
+    else:
+        raise unexpected_token(_current_token.name)
+def parse_exp_5():
+    if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:  
+        parse_exp_4()
+        parse_exp_5_prime()
+        return
+    else:
+        raise unexpected_token(_current_token.name)
+def parse_exp_5_prime():
+    if _current_token==V_T.ADD:
+        consume_token(_current_token)
+        parse_exp_4()
+        parse_exp_5_prime()
+        return
+    if _current_token==V_T.SUB:
+        consume_token(_current_token)
+        parse_exp_4()
+        parse_exp_5_prime()
+        return 
+    if _current_token in [V_T.END,V_T.CPAR]:
+        return
+    else:
+        raise unexpected_token(_current_token.name)         
 def parse_input():
-    print("@ATTENTION: parser.parse_input à corriger !") # LIGNE A SUPPRIMER
-    return
-
+    if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB,V_T.END]:
+        parse_input_prime()
+        consume_token(V_T.END)
+        return
+    else:
+        raise unexpected_token(_current_token.name)
+def parse_input_prime():
+    if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
+        parse_exp()
+        consume_token(V_T.SEQ)
+        parse_input_prime()
+        return
+    if _current_token == V_T.END:
+        consume_token(_current_token)
+        return
+    else:
+        raise unexpected_token(_current_token.name)
 
 #####################################
 ## Fonction principale de la calculatrice
