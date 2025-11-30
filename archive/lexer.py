@@ -253,7 +253,6 @@ def read_NUM():
 # Cela consomme tous les caractères du lexème lu.
 def read_token_after_separators():
     NUM = read_NUM()
-    print(" i", NUM)
     val = float(NUM)
     if val.is_integer():
         val = int(val)

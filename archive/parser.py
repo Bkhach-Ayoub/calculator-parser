@@ -33,7 +33,7 @@ def init_parser(stream):
     global _current_token, _value
     lexer.reinit(stream)
     _current_token, _value = lexer.next_token()
-    # print("@ init parser on",  repr(str_attr_token(_current, _value)))  # for DEBUGGING
+    print("@ init parser on",  repr(str_attr_token(_current_token, _value)))  # for DEBUGGING
 
 def consume_token(tok):
     # Vérifie que le prochain token est tok ;
@@ -48,6 +48,7 @@ def consume_token(tok):
 
 #########################
 ## Parsing de input et exp
+
 def parse_exp():
     if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
         parse_exp_5()
@@ -70,7 +71,7 @@ def parse_exp_0():
         raise unexpected_token(_current_token.name)
 def parse_exp_1():
     if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR]:
-        parse_exp_0()
+        parse_exp_0() # good
         parse_exp_1_prime()
         return
     else:
@@ -81,7 +82,7 @@ def parse_exp_1_prime():
         consume_token(_current_token)
         parse_exp_1()
         return
-    if _current_token in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.FACT]:
+    if _current_token in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ]:
         return
     else:
         raise unexpected_token(_current_token.name)
@@ -99,7 +100,7 @@ def parse_exp_2_prime():
     if _current_token == V_T.FACT:
         consume_token(_current_token)
         parse_exp_2_prime()
-    if _current_token in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL]:
+    if _current_token in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.SEQ]:
         return
     else:
         raise unexpected_token(_current_token.name)
@@ -133,7 +134,7 @@ def parse_exp_4_prime():
         parse_exp_3()
         parse_exp_4_prime()
         return
-    if _current_token in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR]:
+    if _current_token in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR,V_T.SEQ]:
         return
     else:
         raise unexpected_token(_current_token.name)
@@ -155,10 +156,11 @@ def parse_exp_5_prime():
         parse_exp_4()
         parse_exp_5_prime()
         return 
-    if _current_token in [V_T.END,V_T.CPAR]:
+    if _current_token in [V_T.END,V_T.CPAR,V_T.SEQ]:
         return
     else:
         raise unexpected_token(_current_token.name)         
+
 def parse_input():
     if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB,V_T.END]:
         parse_input_prime()
@@ -173,11 +175,24 @@ def parse_input_prime():
         parse_input_prime()
         return
     if _current_token == V_T.END:
-        consume_token(_current_token)
         return
     else:
         raise unexpected_token(_current_token.name)
 
+"""
+def parse_input():
+    if _current_token == V_T.END:
+        consume_token(_current_token)
+        return
+    if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB,V_T.END]:
+        
+        parse_input()
+        parse_exp()
+        consume_token(V_T.SEQ)
+        return
+    else:
+        raise unexpected_token(_current_token.name)
+"""
 #####################################
 ## Fonction principale de la calculatrice
 ## Appelle l'analyseur grammatical et retourne
