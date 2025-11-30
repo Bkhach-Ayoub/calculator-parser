@@ -24,7 +24,7 @@ class ParserError(Exception):
     pass
 
 def unexpected_token(expected):
-    return ParserError("Found token '" + str_attr_token(_current_token,_value) + "' but expected " + expected)
+    return ParserError("Found token '" + _current_token.name + "' but expected " + expected)
 
 def get_current():
     return _current_token
@@ -55,12 +55,14 @@ def parse_exp():
         return 
     else:
         raise unexpected_token(_current_token.name)
+    
 def parse_exp_0():
     if _current_token == V_T.NUM:
         consume_token(_current_token)
         return
     if _current_token == V_T.CALC:
         consume_token(_current_token)
+        parse_exp_0()
         return
     if _current_token == V_T.OPAR:
         consume_token(_current_token)
@@ -69,9 +71,10 @@ def parse_exp_0():
         return 
     else:
         raise unexpected_token(_current_token.name)
+    
 def parse_exp_1():
     if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR]:
-        parse_exp_0() # good
+        parse_exp_0()
         parse_exp_1_prime()
         return
     else:
@@ -95,7 +98,6 @@ def parse_exp_2():
     else:
         raise unexpected_token(_current_token.name)
 
-
 def parse_exp_2_prime():
     if _current_token == V_T.FACT:
         consume_token(_current_token)
@@ -115,6 +117,7 @@ def parse_exp_3():
         return
     else:
         raise unexpected_token(_current_token.name)
+    
 def parse_exp_4():
     if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
         parse_exp_3()
@@ -138,6 +141,7 @@ def parse_exp_4_prime():
         return
     else:
         raise unexpected_token(_current_token.name)
+    
 def parse_exp_5():
     if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:  
         parse_exp_4()
@@ -145,6 +149,7 @@ def parse_exp_5():
         return
     else:
         raise unexpected_token(_current_token.name)
+    
 def parse_exp_5_prime():
     if _current_token==V_T.ADD:
         consume_token(_current_token)
@@ -164,10 +169,10 @@ def parse_exp_5_prime():
 def parse_input():
     if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB,V_T.END]:
         parse_input_prime()
-        consume_token(V_T.END)
         return
     else:
         raise unexpected_token(_current_token.name)
+    
 def parse_input_prime():
     if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
         parse_exp()

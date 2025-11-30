@@ -196,7 +196,6 @@ def read_NUM():
         return None
     c = peek_char1()
     while c != defs.EOI and c not in defs.SEP:
-        print(c)
         if c == '.':
             Présence_de_point = True
             consume_char()
