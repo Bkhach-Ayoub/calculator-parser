@@ -269,6 +269,9 @@ def next_token():
         ch3 = peek_char3()
         if ch in defs.DIGITS or (ch == '.' and ch3[1] in defs.DIGITS):
             return read_token_after_separators()
+        elif ch == '#':
+            consume_char()
+            return(defs.V_T.CALC,0)
         elif ch in defs.TOKEN_MAP:
             consume_char()
             return (defs.TOKEN_MAP[ch], None)
