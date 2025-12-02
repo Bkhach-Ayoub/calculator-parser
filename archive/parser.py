@@ -102,6 +102,7 @@ def parse_exp_2_prime():
     if get_current() == V_T.FACT:
         consume_token(get_current())
         parse_exp_2_prime()
+        return
     if get_current() in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.SEQ]:
         return
     else:
@@ -186,14 +187,12 @@ def parse_input_prime():
 
 """
 def parse_input():
-    if get_current() == V_T.END:
-        consume_token(get_current())
-        return
-    if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB,V_T.END]:
-        
+    if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
         parse_input()
         parse_exp()
         consume_token(V_T.SEQ)
+        return
+    if get_current() == V_T.END:  
         return
     else:
         raise unexpected_token(get_current().name)
@@ -206,9 +205,9 @@ def parse_input():
 
 def parse(stream=sys.stdin):
     init_parser(stream)
-    l = parse_input()
+    parse_input()
     consume_token(V_T.END)
-    return l
+    return None
 
 #####################################
 ## Test depuis la ligne de commande

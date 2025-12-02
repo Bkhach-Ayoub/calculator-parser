@@ -260,6 +260,7 @@ def read_token_after_separators():
 # Donne le prochain token de l'entrée, en sautant les séparateurs éventuels en tête
 # et en consommant les caractères du lexème reconnu.
 def next_token():
+    S= 0
     while True:
         ch = peek_char1()
         if ch == defs.EOI:
@@ -271,7 +272,8 @@ def next_token():
             return read_token_after_separators()
         elif ch == '#':
             consume_char()
-            return(defs.V_T.CALC,0)
+            S+=1
+            return(defs.V_T.CALC,S)
         elif ch in defs.TOKEN_MAP:
             consume_char()
             return (defs.TOKEN_MAP[ch], None)
