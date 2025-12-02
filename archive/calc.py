@@ -1,0 +1,224 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Projet TL : parser - requires Python version >= 3.10
+"""
+
+import sys
+from math import factorial
+assert sys.version_info >= (3, 10), "Use Python 3.10 or newer !"
+import math
+import lexer
+from definitions import V_T, str_attr_token
+
+#####
+# Variables internes (à ne pas utiliser directement)
+
+_current_token = V_T.END
+_value = None  # attribut du token renvoyé par le lexer
+
+#####
+# Fonctions génériques
+
+class ParserError(Exception):
+    pass
+
+def unexpected_token(expected):
+    return ParserError("Found token '" +str_attr_token( _current_token,_value) + "' but expected " + expected)
+
+def get_current():
+    return _current_token
+
+def init_parser(stream):
+    global _current_token, _value
+    lexer.reinit(stream)
+    _current_token, _value = lexer.next_token()
+    print("@ init parser on",  repr(str_attr_token(_current_token, _value)))  # for DEBUGGING
+
+def consume_token(tok):
+    # Vérifie que le prochain token est tok ;
+    # si oui, le consomme et renvoie son attribut ; si non, lève une exception
+    global _current_token, _value
+    if _current_token != tok:
+        raise unexpected_token(tok.name)
+    if _current_token != V_T.END:
+        old = _value
+        _current_token, _value = lexer.next_token()
+        return old
+
+#########################
+## Parsing de input et exp
+
+def parse_exp(l):
+    if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
+        n = parse_exp_5(l)
+        return n 
+    else:
+        raise unexpected_token(get_current().name)
+    
+def parse_exp_0(l):
+    if get_current() == V_T.NUM:
+        n = consume_token(get_current())
+        return n
+    if get_current() == V_T.CALC:
+        consume_token(get_current())
+        i = parse_exp_0(l)
+        return l[i-1]
+    if get_current() == V_T.OPAR:
+        n = consume_token(get_current())
+        parse_exp_5(l)
+        consume_token(V_T.CPAR)
+        return n
+    else:
+        raise unexpected_token(get_current().name)
+    
+def parse_exp_1(l):
+    if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR]:
+        n_1 = parse_exp_0(l)
+        n = parse_exp_1_prime(n_1,l)
+        return n
+    else:
+        raise unexpected_token(get_current().name)    
+
+def parse_exp_1_prime(n_1,l):
+    if get_current() == V_T.POW:
+        consume_token(V_T.POW)
+        n_2 = parse_exp_0(l)
+        n = parse_exp_1_prime(math.pow(n_1,n_2),l)
+        return n
+    if get_current() in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ]:
+        return n
+    else:
+        raise unexpected_token(get_current().name)
+    
+def parse_exp_2(l):
+    if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR]:
+        n2=parse_exp_1(l)
+        n =parse_exp_2_prime(n2,l)
+        return n
+    else:
+        raise unexpected_token(get_current().name)
+
+def parse_exp_2_prime(n_1,l):
+    if get_current() == V_T.FACT:
+        consume_token(get_current())
+        n = parse_exp_2_prime(math.factorial(n_1))
+    if get_current() in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.SEQ]:
+        return n_1
+    else:
+        raise unexpected_token(get_current().name)
+    
+def parse_exp_3(l):
+    if get_current()== V_T.SUB:
+        consume_token(get_current())
+        n3=parse_exp_3(l)
+        return -n3
+    if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR]:       
+        n=parse_exp_2(l)
+        return n
+    else:
+        raise unexpected_token(get_current().name)
+    
+def parse_exp_4(l):
+    if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
+        n_1 = parse_exp_3(l)
+        n = parse_exp_4_prime(n_1,l)
+        return n
+    else:
+        raise unexpected_token(get_current().name)
+
+def parse_exp_4_prime(n1,l):
+    if get_current() == V_T.MUL:
+        consume_token(get_current())
+        n2=parse_exp_3(l)
+        n=parse_exp_4_prime(n2*n1,l)
+        return n
+    if get_current() == V_T.DIV:
+        consume_token(get_current())
+        n2=parse_exp_3(l)
+        n=parse_exp_4_prime(n2,l)
+        return n1*n2
+    if get_current() in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR,V_T.SEQ]:
+        return n1
+    else:
+        raise unexpected_token(get_current().name)
+    
+def parse_exp_5(l):
+    if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:  
+        n_1= parse_exp_4(l)
+        n = parse_exp_5_prime(n_1,l)
+        return n
+    else:
+        raise unexpected_token(get_current().name)
+    
+def parse_exp_5_prime(n_1,l):
+    if get_current()==V_T.ADD:
+        consume_token(get_current())
+        n_2 =parse_exp_4(l)
+        n = parse_exp_5_prime(n_1+n_2,l)
+        return n
+    if get_current()==V_T.SUB:
+        consume_token(get_current())
+        n_3 = parse_exp_4(l)
+        parse_exp_5_prime(n_1-n_3,l)
+        return n
+    if get_current() in [V_T.END,V_T.CPAR,V_T.SEQ]:
+        return n_1
+    else:
+        raise unexpected_token(get_current().name)         
+
+def parse_input():
+    if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB,V_T.END]:
+        l_0 = []
+        l = parse_input_prime(l_0)
+        return l 
+    else:
+        raise unexpected_token(get_current().name)
+    
+def parse_input_prime(l_0):
+    if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
+        n = parse_exp(l)
+        consume_token(V_T.SEQ)
+        l = parse_input_prime(l_0)
+        return l_0.append(n)
+    if get_current() == V_T.END:
+        return l
+    else:
+        raise unexpected_token(get_current().name)
+
+"""
+def parse_input():
+    if get_current() == V_T.END:
+        consume_token(get_current())
+        return
+    if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB,V_T.END]:
+        
+        parse_input()
+        parse_exp()
+        consume_token(V_T.SEQ)
+        return
+    else:
+        raise unexpected_token(get_current().name)
+"""
+#####################################
+## Fonction principale de la calculatrice
+## Appelle l'analyseur grammatical et retourne
+## - None sans les attributs
+## - la liste des valeurs des calculs avec les attributs
+
+def parse(stream=sys.stdin):
+    init_parser(stream)
+    l = parse_input()
+    consume_token(V_T.END)
+    return l
+
+#####################################
+## Test depuis la ligne de commande
+
+if __name__ == "__main__":
+    print("@ Testing the calculator in infix syntax.")
+    result = parse()
+    if result is None:
+        print("@ Input OK ")
+    else:
+        print("@ result = ", repr(result))
