@@ -251,16 +251,18 @@ def read_NUM():
 # Parse un lexème (sans séparateurs) de l'entrée et renvoie son token.
 # Cela consomme tous les caractères du lexème lu.
 def read_token_after_separators():
-    NUM = read_NUM()
-    val = float(NUM)
-    if val.is_integer():
-        val = int(val)
-    return (defs.V_T.NUM, val)
+    if peek_char1() == "#":
+        consume_char()
+        integer = read_INT()
+        return (defs.V_T.CALC,int(integer))
+    else:
+        NUM = read_NUM()
+        val = float(NUM)
+        return (defs.V_T.NUM, val)
 
 # Donne le prochain token de l'entrée, en sautant les séparateurs éventuels en tête
 # et en consommant les caractères du lexème reconnu.
 def next_token():
-    S= 0
     while True:
         ch = peek_char1()
         if ch == defs.EOI:
@@ -268,12 +270,8 @@ def next_token():
         elif ch in defs.SEP:
             consume_char()
         ch3 = peek_char3()
-        if ch in defs.DIGITS or (ch == '.' and ch3[1] in defs.DIGITS):
+        if ch in defs.DIGITS or (ch == '.' and ch3[1] in defs.DIGITS)or ch == "#":
             return read_token_after_separators()
-        elif ch == '#':
-            consume_char()
-            S+=1
-            return(defs.V_T.CALC,S)
         elif ch in defs.TOKEN_MAP:
             consume_char()
             return (defs.TOKEN_MAP[ch], None)

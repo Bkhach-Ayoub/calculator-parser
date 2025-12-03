@@ -62,7 +62,6 @@ def parse_exp_0(l):
         return n
     if get_current() == V_T.CALC:
         i = consume_token(get_current())
-        parse_exp_0(l)
         return l[i-1]
     if get_current() == V_T.OPAR:
         consume_token(get_current())
@@ -83,9 +82,8 @@ def parse_exp_1(l):
 def parse_exp_1_prime(n_1,l):
     if get_current() == V_T.POW:
         consume_token(V_T.POW)
-        n_2 = parse_exp_0(l)
-        n = parse_exp_1_prime(math.pow(n_1,n_2),l)
-        return n
+        n_2 = parse_exp_1(l)
+        return math.pow(n_1,n_2)
     if get_current() in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ]:
         return n_1
     else:
@@ -102,7 +100,7 @@ def parse_exp_2(l):
 def parse_exp_2_prime(n_1,l):
     if get_current() == V_T.FACT:
         consume_token(get_current())
-        n = parse_exp_2_prime(math.factorial(n_1),l)
+        n = parse_exp_2_prime(math.factorial(int(n_1)),l)
         return n
     if get_current() in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.SEQ]:
         return n_1
@@ -180,8 +178,8 @@ def parse_input_prime(l):
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
         n = parse_exp(l)
         consume_token(V_T.SEQ)
+        l.append(n)
         l_0 = parse_input_prime(l)
-        l_0.append(n)
         return l_0
     if get_current() == V_T.END:
         return l
