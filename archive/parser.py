@@ -65,7 +65,7 @@ def parse_exp_0():
         return
     if get_current() == V_T.OPAR:
         consume_token(get_current())
-        parse_exp_5()
+        parse_exp()
         consume_token(V_T.CPAR)
         return 
     else:
