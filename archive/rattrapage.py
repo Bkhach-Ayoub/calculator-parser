@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Projet TL : parser - requires Python version >= 3.10
+Projet TL : rattrapage - requires Python version >= 3.10
 """
 
 import sys
@@ -54,7 +54,9 @@ def parse_exp(l):
         n = parse_exp_5(l)
         return n 
     else:
-        raise recover([V_T.CPAR, V_T.SEQ])
+        error = unexpected_token(get_current().name)
+        recover([V_T.CPAR, V_T.SEQ])
+        raise error
     
 def parse_exp_0(l):
     if get_current() == V_T.NUM:
@@ -69,7 +71,9 @@ def parse_exp_0(l):
         consume_token(V_T.CPAR)
         return n
     else:
-        raise recover([V_T.NUM,V_T.CALC,V_T.OPAR,V_T.CPAR])
+        error = unexpected_token(get_current().name)
+        recover([V_T.END,V_T.ADD,V_T.SUB,V_T.POW,V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ])
+        raise error
     
 def parse_exp_1(l):
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR]:
@@ -77,7 +81,9 @@ def parse_exp_1(l):
         n = parse_exp_1_prime(n_1,l)
         return n
     else:
-        raise recover([V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ])    
+        error = unexpected_token(get_current().name)
+        recover([V_T.END, V_T.SEQ])
+        raise error
 
 def parse_exp_1_prime(n_1,l):
     if get_current() == V_T.POW:
@@ -87,7 +93,9 @@ def parse_exp_1_prime(n_1,l):
     if get_current() in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ]:
         return n_1
     else:
-        raise recover([V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ])
+        error = unexpected_token(get_current().name)
+        recover([V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ])
+        raise error
     
 def parse_exp_2(l):
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR]:
@@ -95,7 +103,9 @@ def parse_exp_2(l):
         n =parse_exp_2_prime(n_1,l)
         return n
     else:
-        raise recover([V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.SEQ])
+        error = unexpected_token(get_current().name)
+        recover([V_T.END, V_T.SEQ])
+        raise error
 
 def parse_exp_2_prime(n_1,l):
     if get_current() == V_T.FACT:
@@ -105,7 +115,9 @@ def parse_exp_2_prime(n_1,l):
     if get_current() in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.SEQ]:
         return n_1
     else:
-        raise recover([V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.SEQ])
+        error = unexpected_token(get_current().name)
+        recover([V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.SEQ])
+        raise error
     
 def parse_exp_3(l):
     if get_current()== V_T.SUB:
@@ -116,7 +128,9 @@ def parse_exp_3(l):
         n = parse_exp_2(l)
         return n
     else:
-        raise recover([V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB])
+        error = unexpected_token(get_current().name)
+        recover([V_T.END,V_T.SEQ])
+        raise error
     
 def parse_exp_4(l):
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
@@ -124,7 +138,9 @@ def parse_exp_4(l):
         n = parse_exp_4_prime(n_1,l)
         return n
     else:
-        raise recover([V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR,V_T.SEQ])
+        error = unexpected_token(get_current().name)
+        recover([V_T.END, V_T.SEQ])
+        raise error
 
 def parse_exp_4_prime(n_1,l):
     if get_current() == V_T.MUL:
@@ -140,7 +156,9 @@ def parse_exp_4_prime(n_1,l):
     if get_current() in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR,V_T.SEQ]:
         return n_1
     else:
-        raise recover([V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR,V_T.SEQ])
+        error = unexpected_token(get_current().name)
+        recover([V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR,V_T.SEQ])
+        raise error
     
 def parse_exp_5(l):
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:  
@@ -148,7 +166,9 @@ def parse_exp_5(l):
         n = parse_exp_5_prime(n_1,l)
         return n
     else:
-        raise recover([V_T.END,V_T.CPAR,V_T.SEQ])
+        error = unexpected_token(get_current().name)
+        recover([V_T.END, V_T.SEQ])
+        raise error
     
 def parse_exp_5_prime(n_1,l):
     if get_current()==V_T.ADD:
@@ -164,7 +184,9 @@ def parse_exp_5_prime(n_1,l):
     if get_current() in [V_T.END,V_T.CPAR,V_T.SEQ]:
         return n_1
     else:
-        raise recover([V_T.END,V_T.CPAR,V_T.SEQ])       
+        error = unexpected_token(get_current().name)
+        recover([V_T.END,V_T.CPAR,V_T.SEQ])   
+        raise error
 
 def parse_input():
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB,V_T.END]:
@@ -172,7 +194,9 @@ def parse_input():
         l = parse_input_prime(l_init)
         return l
     else:
-        raise recover([V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB,V_T.SEQ])
+        error = unexpected_token(get_current().name)
+        recover([V_T.END,V_T.ADD,V_T.CPAR,V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ])
+        raise error
     
 def parse_input_prime(l):
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
@@ -184,13 +208,14 @@ def parse_input_prime(l):
     if get_current() == V_T.END:
         return l
     else:
-        raise recover([V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB])
+        error = unexpected_token(get_current().name)
+        recover([V_T.END])
+        raise error
     
 def recover(suiv):
-    print(get_current())
-    while get_current() not in suiv or get_current() != V_T.END:
+    while get_current() not in suiv and get_current() != V_T.END:
         consume_token(get_current())
-    return unexpected_token(get_current().name)
+    return
 
 #####################################
 ## Fonction principale de la calculatrice

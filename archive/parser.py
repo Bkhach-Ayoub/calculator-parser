@@ -184,18 +184,7 @@ def parse_input_prime():
     else:
         raise unexpected_token(get_current().name)
 
-"""
-def parse_input():
-    if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
-        parse_input()
-        parse_exp()
-        consume_token(V_T.SEQ)
-        return
-    if get_current() == V_T.END:  
-        return
-    else:
-        raise unexpected_token(get_current().name)
-"""
+
 #####################################
 ## Fonction principale de la calculatrice
 ## Appelle l'analyseur grammatical et retourne

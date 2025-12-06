@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Projet TL : parser - requires Python version >= 3.10
+Projet TL : calc - requires Python version >= 3.10
 """
 
 import sys
