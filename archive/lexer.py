@@ -5,7 +5,6 @@ Projet TL : lexer de la calculatrice
 """
 
 import sys
-sys.path.append("/home/elfarchi/TL/projet-TL/archive/") # matnssach tmodifier lpath
 import enum
 import definitions as defs
 
@@ -251,26 +250,23 @@ def read_NUM():
 # Parse un lexème (sans séparateurs) de l'entrée et renvoie son token.
 # Cela consomme tous les caractères du lexème lu.
 def read_token_after_separators():
-    if peek_char1() == "#":
+    if peek_char1() == '#':
         consume_char()
         integer = read_INT()
         return (defs.V_T.CALC,int(integer))
     else:
         NUM = read_NUM()
-        val = float(NUM)
-        return (defs.V_T.NUM, val)
+        return (defs.V_T.NUM, float(NUM))
 
 # Donne le prochain token de l'entrée, en sautant les séparateurs éventuels en tête
 # et en consommant les caractères du lexème reconnu.
 def next_token():
     while True:
         ch = peek_char1()
-        if ch == defs.EOI:
-            return (defs.V_T.END, None)
-        elif ch in defs.SEP:
+        if ch in defs.SEP:
             consume_char()
         ch3 = peek_char3()
-        if ch in defs.DIGITS or (ch == '.' and ch3[1] in defs.DIGITS)or ch == "#":
+        if ch in defs.DIGITS or (ch == '.' and ch3[1] in defs.DIGITS) or ch == "#":
             return read_token_after_separators()
         elif ch in defs.TOKEN_MAP:
             consume_char()

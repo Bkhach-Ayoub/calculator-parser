@@ -4,7 +4,6 @@
 Test du lexer du projet de TL
 """
 import sys
-sys.path.append("/home/elfarchi/TL/projet-TL/archive/") # matnssach tmodifier lpath
 import io
 import math
 import definitions as defs
