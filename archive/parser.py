@@ -49,7 +49,7 @@ def consume_token(tok):
 #########################
 ## Parsing de input et exp
  
-def parse_exp_0():
+def parse_exp_0(): # exp_0 -> NUM | CALC | OPAR exp_5 CPAR
     if get_current() == V_T.NUM:
         consume_token(get_current())
         return
@@ -64,7 +64,7 @@ def parse_exp_0():
     else:
         raise unexpected_token(get_current().name)
     
-def parse_exp_1():
+def parse_exp_1(): # exp_1 -> exp_0 exp_1' ( Factorisation )
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR]:
         parse_exp_0()
         parse_exp_1_prime()
@@ -72,7 +72,7 @@ def parse_exp_1():
     else:
         raise unexpected_token(get_current().name)    
 
-def parse_exp_1_prime():
+def parse_exp_1_prime(): # exp_1' -> POW exp_1 | epsilon
     if get_current() == V_T.POW:
         consume_token(V_T.POW)
         parse_exp_1()
@@ -82,7 +82,7 @@ def parse_exp_1_prime():
     else:
         raise unexpected_token(get_current().name)
     
-def parse_exp_2():
+def parse_exp_2():  #exp_2 -> exp_1 exp_2' (Élimination de la Récursion Gauche)
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR]:
         parse_exp_1()
         parse_exp_2_prime()
@@ -90,7 +90,7 @@ def parse_exp_2():
     else:
         raise unexpected_token(get_current().name)
 
-def parse_exp_2_prime():
+def parse_exp_2_prime(): # exp_2' -> FACT exp_2' | epsilon 
     if get_current() == V_T.FACT:
         consume_token(get_current())
         parse_exp_2_prime()
@@ -100,7 +100,7 @@ def parse_exp_2_prime():
     else:
         raise unexpected_token(get_current().name)
     
-def parse_exp_3():
+def parse_exp_3(): # exp_3 -> SUB exp_3 | exp_2
     if get_current()== V_T.SUB:
         consume_token(get_current())
         parse_exp_3()
@@ -111,7 +111,7 @@ def parse_exp_3():
     else:
         raise unexpected_token(get_current().name)
     
-def parse_exp_4():
+def parse_exp_4(): # exp_4 -> exp_3 exp_4' (Élimination de la Récursion Gauche)
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
         parse_exp_3()
         parse_exp_4_prime()
@@ -119,7 +119,7 @@ def parse_exp_4():
     else:
         raise unexpected_token(get_current().name)
 
-def parse_exp_4_prime():
+def parse_exp_4_prime(): #exp_4' -> MUL exp_3 exp_4'| DIV exp_3 exp_4' | epsilon
     if get_current() == V_T.MUL:
         consume_token(get_current())
         parse_exp_3()
@@ -135,7 +135,7 @@ def parse_exp_4_prime():
     else:
         raise unexpected_token(get_current().name)
     
-def parse_exp_5():
+def parse_exp_5(): # exp_5 -> exp_4 exp_5' (Élimination de la Récursion Gauche)
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:  
         parse_exp_4()
         parse_exp_5_prime()
@@ -143,7 +143,7 @@ def parse_exp_5():
     else:
         raise unexpected_token(get_current().name)
     
-def parse_exp_5_prime():
+def parse_exp_5_prime(): # exp_5' -> ADD exp_4 exp_5'| SUB exp_4 exp_5' | epsilon
     if get_current()==V_T.ADD:
         consume_token(get_current())
         parse_exp_4()
@@ -159,14 +159,15 @@ def parse_exp_5_prime():
     else:
         raise unexpected_token(get_current().name)         
 
-def parse_input():
+def parse_input(): # input -> input' END (Élimination de la Récursion Gauche)
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB,V_T.END]:
         parse_input_prime()
+        # La consommation du token V_T.END se trouve dans la fonction parse
         return
     else:
         raise unexpected_token(get_current().name)
     
-def parse_input_prime():
+def parse_input_prime(): # input' -> exp_5 SEQ input' | epsilon 
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
         parse_exp_5()
         consume_token(V_T.SEQ)
