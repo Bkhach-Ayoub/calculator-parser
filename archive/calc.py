@@ -49,13 +49,6 @@ def consume_token(tok):
 #########################
 ## Parsing de input et exp
 
-def parse_exp(l):
-    if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
-        n = parse_exp_5(l)
-        return n 
-    else:
-        raise unexpected_token(get_current().name)
-    
 def parse_exp_0(l):
     if get_current() == V_T.NUM:
         n = consume_token(get_current())
@@ -65,7 +58,7 @@ def parse_exp_0(l):
         return l[i-1]
     if get_current() == V_T.OPAR:
         consume_token(get_current())
-        n = parse_exp(l)
+        n = parse_exp_5(l)
         consume_token(V_T.CPAR)
         return n
     else:
@@ -84,7 +77,7 @@ def parse_exp_1_prime(n_1,l):
         consume_token(V_T.POW)
         n_2 = parse_exp_1(l)
         return math.pow(n_1,n_2)
-    if get_current() in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ]:
+    if get_current() in [V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ]:
         return n_1
     else:
         raise unexpected_token(get_current().name)
@@ -102,7 +95,7 @@ def parse_exp_2_prime(n_1,l):
         consume_token(get_current())
         n = parse_exp_2_prime(math.factorial(int(n_1)),l)
         return n
-    if get_current() in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.SEQ]:
+    if get_current() in [V_T.ADD,V_T.SUB,V_T.CPAR, V_T.DIV,V_T.MUL,V_T.SEQ]:
         return n_1
     else:
         raise unexpected_token(get_current().name)
@@ -137,7 +130,7 @@ def parse_exp_4_prime(n_1,l):
         n_3 = parse_exp_3(l)
         n = parse_exp_4_prime(n_1/n_3,l)
         return n
-    if get_current() in [V_T.END,V_T.ADD,V_T.SUB,V_T.CPAR,V_T.SEQ]:
+    if get_current() in [V_T.ADD,V_T.SUB,V_T.CPAR,V_T.SEQ]:
         return n_1
     else:
         raise unexpected_token(get_current().name)
@@ -161,7 +154,7 @@ def parse_exp_5_prime(n_1,l):
         n_3 = parse_exp_4(l)
         n = parse_exp_5_prime(n_1-n_3,l)
         return n
-    if get_current() in [V_T.END,V_T.CPAR,V_T.SEQ]:
+    if get_current() in [V_T.CPAR,V_T.SEQ]:
         return n_1
     else:
         raise unexpected_token(get_current().name)         
@@ -176,7 +169,7 @@ def parse_input():
     
 def parse_input_prime(l):
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
-        n = parse_exp(l)
+        n = parse_exp_5(l)
         consume_token(V_T.SEQ)
         l.append(n)
         l_0 = parse_input_prime(l)

@@ -48,14 +48,7 @@ def consume_token(tok):
 
 #########################
 ## Parsing de input et exp
-
-def parse_exp():
-    if _current_token in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
-        parse_exp_5()
-        return 
-    else:
-        raise unexpected_token(get_current().name)
-    
+ 
 def parse_exp_0():
     if get_current() == V_T.NUM:
         consume_token(get_current())
@@ -65,7 +58,7 @@ def parse_exp_0():
         return
     if get_current() == V_T.OPAR:
         consume_token(get_current())
-        parse_exp()
+        parse_exp_5()
         consume_token(V_T.CPAR)
         return 
     else:
@@ -175,7 +168,7 @@ def parse_input():
     
 def parse_input_prime():
     if get_current() in [V_T.NUM,V_T.CALC,V_T.OPAR,V_T.SUB]:
-        parse_exp()
+        parse_exp_5()
         consume_token(V_T.SEQ)
         parse_input_prime()
         return
