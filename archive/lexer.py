@@ -266,7 +266,7 @@ def next_token():
         if ch in defs.SEP:
             consume_char()
         ch3 = peek_char3()
-        if ch in defs.DIGITS or (ch == '.' and ch3[1] in defs.DIGITS) or ch == "#":
+        if ch in defs.DIGITS or (ch == '.' and ch3[1] in defs.DIGITS) or ch == '#':
             return read_token_after_separators()
         elif ch in defs.TOKEN_MAP:
             consume_char()
