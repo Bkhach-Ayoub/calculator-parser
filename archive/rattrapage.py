@@ -64,7 +64,7 @@ def parse_exp_0(l):
         return n
     else:
         error = unexpected_token(get_current().name)
-        recover([V_T.ADD,V_T.SUB,V_T.POW,V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ])
+        recover([V_T.ADD,V_T.SUB,V_T.CPAR,V_T.POW,V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ])
         raise error
     
 def parse_exp_1(l):
@@ -74,7 +74,7 @@ def parse_exp_1(l):
         return n
     else:
         error = unexpected_token(get_current().name)
-        recover([V_T.ADD,V_T.SUB,V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ])
+        recover([V_T.ADD,V_T.SUB,V_T.CPAR,V_T.DIV,V_T.MUL,V_T.FACT,V_T.SEQ])
         raise error
 
 def parse_exp_1_prime(n_1,l):
